@@ -89,7 +89,7 @@ Etcd installation:
 Keepalived configuration:
 - resolve vip to ip if neccessary
 - resolve masters to ips
-- router_id is calculated from vip ip: we sum la last 2 numbers and retrieve modulo
+- router_id is calculated from vip ip: we sum the last 2 numbers and retrieve modulo with 255
 - write everything in keepalived.conf.template
 - keepalived pod is setting the interface in the config file,
 removes the script that autogenerates the config file from the image
