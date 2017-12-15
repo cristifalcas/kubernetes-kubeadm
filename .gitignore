@@ -1,0 +1,4 @@
+*.pyc
+kubeadm.log
+kube_config.yaml
+

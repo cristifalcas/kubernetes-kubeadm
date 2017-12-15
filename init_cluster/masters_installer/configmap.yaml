@@ -1,0 +1,26 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: copy-config
+  namespace: kube-system
+data:
+  copy_files.sh: |
+    #!/bin/sh
+    set -ex
+    [ "$(ls -A /etc/kubernetes/manifests/)" ] && exit 0
+    # we should run this only if we have a vip
+    [[ -f /opt/kubeconf/vip ]] || exit 1
+    kubectl taint node $(hostname) node-role.kubernetes.io/master="":NoSchedule --overwrite
+    kubectl label node $(hostname) node-role.kubernetes.io/master=""            --overwrite
+    vip=$(cat /opt/kubeconf/vip)
+    # just in case, fix kubelet config (should only be needed if host joined before the fix in init script)
+    grep $vip /etc/kubernetes/kubelet.conf || \
+      kubectl config set clusters.kubernetes.server https://$vip:6443 --kubeconfig /etc/kubernetes/kubelet.conf
+    cat /opt/kubeconf/kubeconf | base64 -d | tar xvf -  -C / || ERROR=1
+    # if we have an error, clean all and bailout
+    if [[ "$ERROR" -eq 1 ]]; then rm -f /etc/kubernetes/manifests/*;exit 100;fi
+    rm -f /etc/kubernetes/pki/apiserver*
+    kubeadm alpha phase certs selfsign \
+      --cert-altnames $(cat /opt/kubeconf/masters),$vip \
+      --dns-domain $(cat /opt/kubeconf/CLUSTER_DOMAIN) \
+      --service-cidr $(cat /opt/kubeconf/SRV_NETWORK)/$(cat /opt/kubeconf/SRV_NETWORK_SIZE)

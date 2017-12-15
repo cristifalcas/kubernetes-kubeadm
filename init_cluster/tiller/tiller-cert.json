@@ -1,0 +1,12 @@
+{
+	"hosts": [
+		"tiller",
+		"localhost",
+		"127.0.0.1"
+	],
+	"CN": "tiller",
+	"key": {
+		"algo": "rsa",
+		"size": 2048
+	}
+}

@@ -1,0 +1,25 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kube-flannel-cfg
+  namespace: kube-system
+  labels:
+    tier: node
+    app: flannel
+data:
+  cni-conf.json: |
+    {
+      "name": "cbr0",
+      "type": "flannel",
+      "delegate": {
+        "isDefaultGateway": true,
+        "hairpinMode": true
+      }
+    }
+  net-conf.json: |-
+    {
+      "Network":   "NOD_NETWORK_SPACE/NOD_NETWORK_SPACE_SIZE",
+      "Backend": {
+        "Type": "vxlan"
+      }
+    }

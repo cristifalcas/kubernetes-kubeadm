@@ -1,0 +1,30 @@
+export KUBE_VERSION=1.6.7
+
+#used for templating only
+export DOCKER_REGISTRY=${DOCKER_REGISTRY:-"local-registry.company.org:1443"}
+export KUBELET_SYSTEM_RESERVED=${KUBELET_SYSTEM_RESERVED:-"cpu=1,memory=2Gi"}
+
+# required by kubeadm
+export KUBE_REPO_PREFIX=external
+export KUBE_ETCD_IMAGE="$KUBE_REPO_PREFIX/etcd-amd64:3.0.17"
+export PAUSE_IMAGE="$KUBE_REPO_PREFIX/pause-amd64:3.0"
+
+# other
+DOCKER_REGISTRY_HOST=$(while IFS=':'; do HOST=($DOCKER_REGISTRY);echo ${HOST[0]};break;done)
+export HELM_REPO=${HELM_REPO:-"$DOCKER_REGISTRY_HOST:443"}
+# other images used
+export TILLER_IMAGE="$KUBE_REPO_PREFIX/tiller:v2.7.0"
+export FLANNEL_IMAGE="$KUBE_REPO_PREFIX/flannel:v0.9.0-amd64"
+export KEEPALIVED_IMAGE="$KUBE_REPO_PREFIX/origin-keepalived-ipfailover:v3.6.0"
+export ALPINE_IMAGE="$KUBE_REPO_PREFIX/alpine:3.6"
+
+# those are fixed. don't change them (also used during templating)
+export NOD_NETWORK_SPACE="10.240.0.0"
+export NOD_NETWORK_SPACE_SIZE=13
+# we keep 10.255.0.x for services
+export SRV_NETWORK="10.255.0.0"
+export SRV_NETWORK_SIZE=16
+# we keep 10.248.0.x for docker
+export DOCKER_NETWORK="10.248.0.1"
+export CLUSTER_DNS="10.255.0.10"
+export CLUSTER_DOMAIN=kube_domain

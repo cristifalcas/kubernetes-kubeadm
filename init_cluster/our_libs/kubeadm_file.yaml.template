@@ -1,0 +1,40 @@
+#https://kubernetes.io/docs/admin/kubeadm/#config-file
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+kubernetesVersion: v{{kube_ver}}
+networking:
+  podSubnet: {{NOD_NETWORK_SPACE}}/{{NOD_NETWORK_SPACE_SIZE}}
+  serviceSubnet: {{SRV_NETWORK}}/{{SRV_NETWORK_SIZE}}
+  dnsDomain: {{CLUSTER_DOMAIN}}
+
+apiServerExtraArgs:
+  token-auth-file: /etc/kubernetes/tokens
+#  apiserver-count: "{{masters|length}}"
+controllerManagerExtraArgs:
+  service-cluster-ip-range: {{SRV_NETWORK}}/{{SRV_NETWORK_SIZE}}
+#schedulerExtraArgs:
+#  <argument>: <value|string>
+
+etcd:
+  endpoints:
+{%- for master in masters %}
+  - https://{{master}}:2379
+{%- endfor %}
+  caFile: /etc/kubernetes/pki/ca.crt
+  certFile: /etc/kubernetes/pki/apiserver-kubelet-client.crt
+  keyFile: /etc/kubernetes/pki/apiserver-kubelet-client.key
+
+{% if vip -%}
+api:
+  advertiseAddress: {{vip}}
+apiServerCertSANs:
+- {{vip}}
+{%- for host in masters %}
+- {{host}}
+{%- endfor %}
+{%- endif %}
+
+{% if token -%}
+token: {{token}}
+{%- endif %}
+tokenTTL: 0

@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    component: keepalived
+  name: keepalived
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: keepalived
+    image: KEEPALIVED_IMAGE
+    command:
+    - bash
+    - -c
+    - 'sed "s/\\(\\s*interface\\s*\\).*/\\1$(ip route get 1 | cut -f 5 -d " " | head -1)/" -i /etc/keepalived/keepalived.conf && sed "s/\\s*generate_failover_config.*//" -i /var/lib/ipfailover/keepalived/lib/failover-functions.sh && /var/lib/ipfailover/keepalived/monitor.sh'
+#    resources:
+#      limits:
+#        cpu: "100m"
+#        memory: "64Mi"
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: kubernetes-pki
+      mountPath: /etc/kubernetes/pki
+      readOnly: true
+    - name: keepalived
+      mountPath: /etc/keepalived/
+      readOnly: false
+    - name: modules
+      mountPath: /lib/modules
+      readOnly: true
+    - name: dev
+      mountPath: /dev
+      readOnly: true
+  volumes:
+    - name: kubernetes-pki
+      hostPath:
+        path: /etc/kubernetes/pki
+    - name: keepalived
+      hostPath:
+        path: /etc/keepalived/
+    - name: modules
+      hostPath:
+        path: /lib/modules
+    - name: dev
+      hostPath:
+        path: /dev

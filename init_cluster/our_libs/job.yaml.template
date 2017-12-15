@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-cleanup-{{host}}
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      nodeName: {{host}}
+      hostNetwork: true
+      restartPolicy: Never
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      restartPolicy: Never
+      containers:
+      - name: init-cleanup
+        image: {{ALPINE_IMAGE}}
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "sed -i s/ERROR// /etc/kubernetes/manifests/etcd-cluster.yaml; rm -f /etc/kubernetes/manifests/etcd-init* /etc/kubernetes/kubeadm_file.yaml"
+        volumeMounts:
+        - name: k8s
+          mountPath: /etc/kubernetes/
+      volumes:
+      - name: k8s
+        hostPath:
+          path: /etc/kubernetes

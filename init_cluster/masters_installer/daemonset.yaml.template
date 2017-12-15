@@ -1,0 +1,93 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: masters-installer-ds
+  namespace: kube-system
+  labels:
+    app: masters-installer
+spec:
+  template:
+    metadata:
+      labels:
+        app: masters-installer
+    spec:
+      hostNetwork: true
+      serviceAccountName: masters-installer
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+{%- for host in masters %}
+                - {{host}}
+{%- endfor %}
+      initContainers:
+      - name: copy-config
+        image: external/alpine:3.6
+        command: ['sh', '-c', 'sh -x /opt/copy-config/copy_files.sh']
+        volumeMounts:
+        - name: kubernetes
+          mountPath: /etc/kubernetes/
+        - name: keepalived
+          mountPath: /etc/keepalived
+        - name: kubectl
+          mountPath: /bin/kubectl
+          readOnly: true
+        - name: kubeadm
+          mountPath: /bin/kubeadm
+          readOnly: true
+        - name: kubeconf
+          mountPath: /opt/kubeconf
+          readOnly: true
+        - name: copy-config
+          mountPath: /opt/copy-config
+          readOnly: true
+      containers:
+      - name: masters-installer
+        image: external/alpine:3.6
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'while [[ 1 ]]; do sleep 100000;done']
+#        resources:
+#          limits:
+#            cpu: "100m"
+#            memory: "32Mi"
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: kubernetes
+          mountPath: /etc/kubernetes/
+        - name: kubectl
+          mountPath: /bin/kubectl
+          readOnly: true
+        - name: kubeadm
+          mountPath: /bin/kubeadm
+          readOnly: true
+        - name: kubeconf
+          mountPath: /opt/kubeconf
+          readOnly: true
+      volumes:
+        - name: kubernetes
+          hostPath:
+            path: /etc/kubernetes
+        - name: keepalived
+          hostPath:
+            path: /etc/keepalived
+        - name: kubectl
+          hostPath:
+            path: /bin/kubectl
+        - name: kubeadm
+          hostPath:
+            path: /bin/kubeadm
+        - name: copy-config
+          configMap:
+            name: copy-config
+        - name: kubeconf
+          configMap:
+            name: kubeconf

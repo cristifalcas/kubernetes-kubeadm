@@ -1,0 +1,11 @@
+stages:
+  - build
+
+build_el7:
+  stage: build
+  script:
+  - echo build
+  tags:
+  - oel7, docker-in-docker, romania
+  only:
+  - tags
