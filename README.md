@@ -77,15 +77,14 @@ Etcd installation:
 	- we make an etcd pod for each master with affinity for the respective master
 	- each pod has in the etcd_cluster his own hostname and all previous masters
 - kubelet will only start the etcd pod for the respective hostname
-- at init time the etcd pod has in etcd_cluster only his own hostname
-- after cluster bootstrap, we copy all kubernetes config in a config map and launch a daemonset on all masters.
-The daemonset will copy the entire kubernetes config on all masters
-- the other etcd servers will begin to start on the other masters
+- at init time the etcd pod has in etcd_cluster only his own hostname (and has kind: PodERROR)
+- after cluster bootstrap, a custom daemonset will add etcd manifests on all masters
+- the rest of etcd servers will begin to start on the new masters
 - we start "clusterizing" the etcd servers. For each master (except the init node):
 	- wait for the pod to start
 	- add the master as a new member inside the cluster from init pod
 	- wait for cluster to be healthy again
-- when we finish, a job will run on all masters, deleting the init etcd pods and installing the cluster pod
+- when we finish, a job will run on all masters, deleting the init etcd pods and installing the cluster pod (renaming kind: PodERROR to Pod)
 
 Keepalived configuration:
 - resolve vip to ip if neccessary
