@@ -27,4 +27,4 @@ export SRV_NETWORK_SIZE=16
 # we keep 10.248.0.x for docker
 export DOCKER_NETWORK="10.248.0.1"
 export CLUSTER_DNS="10.255.0.10"
-export CLUSTER_DOMAIN=kube_domain
+export CLUSTER_DOMAIN=kubedomain
