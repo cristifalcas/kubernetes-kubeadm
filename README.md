@@ -20,6 +20,8 @@ Selinux should be disabled
 
 # Init the cluster #
 
+We need kubernetes python bindings, a repo with kubernetes rpms.
+
 ## Variables ##
 
 Check the variables file in order to update some configs.
