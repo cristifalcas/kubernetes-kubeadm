@@ -9,8 +9,8 @@ export PAUSE_IMAGE="gcr.io/google_containers/pause-amd64:3.0"
 export KUBE_ETCD_IMAGE="gcr.io/google_containers/etcd-amd64:3.0.17"
 
 # other
-export HELM_REPO=${HELM_REPO:-"$DOCKER_REGISTRY:443"}
-#export TILLER_IMAGE="$KUBE_REPO_PREFIX/tiller:v2.7.0"
+export HELM_REPO=""
+export TILLER_IMAGE=""
 export FLANNEL_IMAGE="quay.io/coreos/flannel:v0.9.0-amd64"
 export KEEPALIVED_IMAGE="openshift/origin-keepalived-ipfailover:v3.7.0"
 export ALPINE_IMAGE="alpine:3.6"
