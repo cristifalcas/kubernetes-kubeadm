@@ -29,7 +29,10 @@ Selinux should be disabled
 
 # Init the cluster #
 
-We need kubernetes python bindings: pip install kubernetes
+We need kubernetes python bindings and cfssl binaries:
+
+    pip install kubernetes
+    yum install https://copr-be.cloud.fedoraproject.org/results/hnakamur/cfssl/epel-7-x86_64/00563301-cfssl/cfssl-1.2.0-1.1.git9c06c53.el7.centos.x86_64.rpm
 
 ## Variables ##
 
