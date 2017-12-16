@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 # logging needs to be imported before any other module has a chance to initialize it
-import logging, sys, os, inspect, argparse, socket, distutils.dir_util, time, re, traceback, urllib2, dbus
+import logging, sys, os, inspect, argparse, socket, distutils.dir_util, time, re, traceback, urllib2
 from our_libs import logger
 
 crt_dir = os.path.dirname(os.path.realpath(__file__))
