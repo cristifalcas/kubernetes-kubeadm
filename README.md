@@ -9,8 +9,17 @@ Selinux should be disabled
 
 # Configure the template #
 
+    cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+    [kubernetes]
+    name=Kubernetes
+    baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    enabled=1
+    EOF
+
     source ./variables
     yum install -y kernel docker iptables bind-utils kubelet-$KUBE_VERSION kubeadm-$KUBE_VERSION kubectl-$KUBE_VERSION
+    systemctl enable docker kubelet && systemctl start docker kubelet
+
     printf '[Service]\nEnvironment="KUBELET_DNS_ARGS=--cluster-domain=%s --cluster-dns=%s"\n' \
             "$CLUSTER_DOMAIN"  "$CLUSTER_DNS" \
             > /etc/systemd/system/kubelet.service.d/20-dns-override.conf
@@ -20,7 +29,7 @@ Selinux should be disabled
 
 # Init the cluster #
 
-We need kubernetes python bindings, a repo with kubernetes rpms.
+We need kubernetes python bindings: pip install kubernetes
 
 ## Variables ##
 
