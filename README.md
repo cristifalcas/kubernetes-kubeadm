@@ -34,7 +34,7 @@ Selinux should be disabled
     }
     EOF
 
-    systemctl enable docker kubelet && systemctl start docker kubelet
+    systemctl enable docker kubelet && systemctl restart docker kubelet
 
 # Init the cluster #
 
