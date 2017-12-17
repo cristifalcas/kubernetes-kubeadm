@@ -17,6 +17,7 @@ Selinux should be disabled
     EOF
 
     source ./variables
+    rpm --import https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     yum install -y kernel docker iptables bind-utils kubelet-$KUBE_VERSION kubeadm-$KUBE_VERSION kubectl-$KUBE_VERSION
 
     printf '[Service]\nEnvironment="KUBELET_DNS_ARGS=--cluster-domain=%s --cluster-dns=%s"\n' \
