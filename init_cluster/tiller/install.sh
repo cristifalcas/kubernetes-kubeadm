@@ -53,8 +53,8 @@ helm init \
 	$TILLER_IMAGE_ARGS \
 	--debug
 # keys are kept in tiller-secret
-rm -f $KUBE_PKI/tiller-key.pem
-rm -f $KUBE_PKI/tiller.crt
+#rm -f $KUBE_PKI/tiller-key.pem
+#rm -f $KUBE_PKI/tiller.crt
 
 kubectl $mode serviceaccount --namespace kube-system tiller
 kubectl $mode clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
