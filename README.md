@@ -26,6 +26,13 @@ Selinux should be disabled
             "$KUBELET_SYSTEM_RESERVED" "$PAUSE_IMAGE" \
             > /etc/systemd/system/kubelet.service.d/20-extra-args.conf
 
+    # for newer docker
+    cat << EOF > /etc/docker/daemon.json
+    {
+      "exec-opts": ["native.cgroupdriver=systemd"]
+    }
+    EOF
+
     systemctl enable docker kubelet && systemctl start docker kubelet
 
 # Init the cluster #
