@@ -35,6 +35,7 @@ We need kubernetes python bindings, helm binary and cfssl binaries (on our envir
     pip install kubernetes==3.0.0
     # you will also need backports.ssl-match-hostname-3.5.0
     pip install backports.ssl-match-hostname>=3.5.0 --upgrade
+    yum install -y python2-psutil
     yum install -y https://copr-be.cloud.fedoraproject.org/results/hnakamur/cfssl/epel-7-x86_64/00563301-cfssl/cfssl-1.2.0-1.1.git9c06c53.el7.centos.x86_64.rpm
     curl -L https://storage.googleapis.com/kubernetes-helm/helm-v2.7.2-linux-amd64.tar.gz | tar xz && mv linux-amd64/helm /usr/bin/
 
