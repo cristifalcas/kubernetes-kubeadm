@@ -4,7 +4,6 @@ export KUBE_VERSION=1.6.7
 export KUBELET_SYSTEM_RESERVED=${KUBELET_SYSTEM_RESERVED:-"cpu=1,memory=2Gi"}
 
 # required by kubeadm
-#export KUBE_REPO_PREFIX=external
 export PAUSE_IMAGE="gcr.io/google_containers/pause-amd64:3.0"
 export KUBE_ETCD_IMAGE="gcr.io/google_containers/etcd-amd64:3.0.17"
 
