@@ -18,7 +18,6 @@ Selinux should be disabled
 
     source ./variables
     yum install -y kernel docker iptables bind-utils kubelet-$KUBE_VERSION kubeadm-$KUBE_VERSION kubectl-$KUBE_VERSION
-    systemctl enable docker kubelet && systemctl start docker kubelet
 
     printf '[Service]\nEnvironment="KUBELET_DNS_ARGS=--cluster-domain=%s --cluster-dns=%s"\n' \
             "$CLUSTER_DOMAIN"  "$CLUSTER_DNS" \
@@ -26,6 +25,8 @@ Selinux should be disabled
     printf '[Service]\nEnvironment="KUBELET_EXTRA_ARGS=--image-pull-progress-deadline=10m --system-reserved=%s --pod-infra-container-image=%s"\n' \
             "$KUBELET_SYSTEM_RESERVED" "$PAUSE_IMAGE" \
             > /etc/systemd/system/kubelet.service.d/20-extra-args.conf
+
+    systemctl enable docker kubelet && systemctl start docker kubelet
 
 # Init the cluster #
 
