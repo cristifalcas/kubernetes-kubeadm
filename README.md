@@ -34,6 +34,7 @@ Selinux should be disabled
     }
     EOF
 
+    # if in aws, add --cloud-provider=aws in /etc/kubernetes/manifests/kube-controller-manager.yaml
     systemctl enable docker kubelet && systemctl daemon-reload && systemctl restart docker kubelet
 
 # Init the cluster #
