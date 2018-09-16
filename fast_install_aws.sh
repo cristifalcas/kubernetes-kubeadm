@@ -103,4 +103,18 @@ helm init  	--node-selectors='node-role.kubernetes.io/master=' \
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 
+cat <<'EOF' > ./storage_class.yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: gp2
+  annotations:
+    storageclass.beta.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+EOF
+kubectl create -f ./storage_class.yaml
+
 export KUBECONFIG=/etc/kubernetes/admin.conf 
