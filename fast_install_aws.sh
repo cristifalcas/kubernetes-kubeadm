@@ -22,6 +22,7 @@ Environment="KUBELET_EXTRA_ARGS= \
 Environment="KUBELET_DNS_ARGS=--cluster-domain=kubetest --cluster-dns=10.255.0.10"
 EOF
 systemctl daemon-reload
+systemctl restart docker kubelet
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=kubernetes.io/cluster/kubetest,Value=owned
 
 cat <<'EOF' > /etc/kubernetes/manifests/etcd.yaml 
