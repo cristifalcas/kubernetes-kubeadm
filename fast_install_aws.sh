@@ -8,7 +8,7 @@ REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document|g
 # next 3 lines should be run on nodes also
 yum install -y awscli docker kubectl-$KUBE_VER kubeadm-$KUBE_VER kubelet-$KUBE_VER
 systemctl daemon-reload
-aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=kubernetes.io/cluster/kops.opsguru-cncf.com,Value=owned
+aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=kubernetes.io/cluster/kubetest,Value=owned
 
 cat <<'EOF' > /etc/kubernetes/manifests/etcd.yaml 
 apiVersion: v1
@@ -79,7 +79,7 @@ controllerManagerExtraArgs:
   service-cluster-ip-range: 10.255.0.0/22
   configure-cloud-routes: "false"
   attach-detach-reconcile-sync-period: "1m0s"
-  cluster-name: kops.opsguru-cncf.com
+  cluster-name: kubetest
 etcd:
   endpoints:
   - https://$HOSTNAME:2379
