@@ -95,7 +95,7 @@ curl -L https://storage.googleapis.com/kubernetes-helm/helm-v2.8.2-linux-amd64.t
 helm init  	--node-selectors='node-role.kubernetes.io/master=' \
 	--override 'spec.template.spec.tolerations[0].key=node-role.kubernetes.io/master' \
 	--override 'spec.template.spec.tolerations[0].effect=NoSchedule' \
-	--override 'spec.template.spec.tolerations[0].operator=Exists' 
+	--override 'spec.template.spec.tolerations[0].operator=Exists' \
 	--service-account tiller
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
