@@ -91,6 +91,7 @@ cloudProvider: "aws"
 networking:
   podSubnet: 10.240.0.0/13
   serviceSubnet: 10.255.0.0/22
+  dnsDomain: kubetest
 controllerManagerExtraArgs:
   service-cluster-ip-range: 10.255.0.0/22
   configure-cloud-routes: "false"
