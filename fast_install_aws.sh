@@ -5,7 +5,7 @@ kubernetes.io/cluster/falcas
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}')
 
-yum install -y awscli kubectl-$KUBE_VER kubeadm-$KUBE_VER kubelet-$KUBE_VER
+yum install -y awscli docker kubectl-$KUBE_VER kubeadm-$KUBE_VER kubelet-$KUBE_VER
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=kubernetes.io/cluster/kubetest,Value=owned
 
 cat <<'EOF' > /etc/kubernetes/manifests/etcd.yaml 
