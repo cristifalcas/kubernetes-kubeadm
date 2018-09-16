@@ -1,7 +1,12 @@
-#!/bin/bash
-KUBE_VER=1.9.10
+#!/bin/bash -ex
 
-yum install -y aws kubectl-$KUBE_VER kubeadm-$KUBE_VER kubelet-$KUBE_VER
+KUBE_VER=1.9.10
+kubernetes.io/cluster/falcas
+INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}')
+
+yum install -y awscli kubectl-$KUBE_VER kubeadm-$KUBE_VER kubelet-$KUBE_VER
+aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=kubernetes.io/cluster/kubetest,Value=owned
 
 cat <<EOF > /etc/kubernetes/manifests/etcd.yaml 
 apiVersion: v1
@@ -72,6 +77,7 @@ controllerManagerExtraArgs:
   service-cluster-ip-range: 10.255.0.0/22
   configure-cloud-routes: "false"
   attach-detach-reconcile-sync-period: "1m0s"
+  cluster-name: kubetest
 etcd:
   endpoints:
   - https://$HOSTNAME:2379
@@ -81,8 +87,7 @@ etcd:
 EOF
 
 kubeadm init --config ./kubeadmin_conf.yaml --skip-preflight-checks
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
-
+#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
 curl -L https://storage.googleapis.com/kubernetes-helm/helm-v2.8.2-linux-amd64.tar.gz | tar xvz && \
@@ -94,3 +99,5 @@ helm init  	--node-selectors='node-role.kubernetes.io/master=' \
 	--service-account tiller
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+
+export KUBECONFIG=/etc/kubernetes/admin.conf 
