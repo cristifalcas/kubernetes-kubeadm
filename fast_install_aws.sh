@@ -84,6 +84,7 @@ etcd:
   caFile: /etc/kubernetes/pki/ca.crt
   certFile: /etc/kubernetes/pki/apiserver-kubelet-client.crt
   keyFile: /etc/kubernetes/pki/apiserver-kubelet-client.key
+tokenTTL: 0s
 EOF
 
 kubeadm init --config ./kubeadmin_conf.yaml --ignore-preflight-errors=all
