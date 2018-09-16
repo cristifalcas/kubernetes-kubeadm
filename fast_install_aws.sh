@@ -8,7 +8,7 @@ REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document|g
 yum install -y awscli kubectl-$KUBE_VER kubeadm-$KUBE_VER kubelet-$KUBE_VER
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=kubernetes.io/cluster/kubetest,Value=owned
 
-cat <<EOF > /etc/kubernetes/manifests/etcd.yaml 
+cat <<'EOF' > /etc/kubernetes/manifests/etcd.yaml 
 apiVersion: v1
 kind: Pod
 metadata:
