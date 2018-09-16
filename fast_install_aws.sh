@@ -5,8 +5,22 @@ kubernetes.io/cluster/falcas
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}')
 
-# next 3 lines should be run on nodes also
+# next lines should be run on nodes also
 yum install -y awscli docker kubectl-$KUBE_VER kubeadm-$KUBE_VER kubelet-$KUBE_VER
+cat <<'EOF' > /etc/systemd/system/kubelet.service.d/20-extra-args.conf
+[Service]
+Environment="KUBELET_EXTRA_ARGS= \
+--cloud-provider=aws \
+--eviction-hard=memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<10%,imagefs.inodesFree<5% \
+--volume-plugin-dir=/opt/kubernetes/kubelet-plugins \
+--image-pull-progress-deadline=10m \
+--authentication-token-webhook \
+--anonymous-auth=false \
+--protect-kernel-defaults=true \
+--keep-terminated-pod-volumes=false \
+"
+Environment="KUBELET_DNS_ARGS=--cluster-domain=kubetest --cluster-dns=10.255.0.10"
+EOF
 systemctl daemon-reload
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=kubernetes.io/cluster/kubetest,Value=owned
 
